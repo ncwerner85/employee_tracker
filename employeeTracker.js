@@ -73,15 +73,25 @@ connection.connect(function(err) {
     });
   }
   // function to handle viewing employees
-/*  function viewEE() {
+function viewEE() {
     console.log("Viewing employees\n");
-      connection.query(
-          "SELECT * FROM employee",
-        function(err) {
-              if (err) throw err;
-              console.table(res);
-             // start()
-            }
-      )
-  };*/
+    
+	const query = `
+    SELECT e.id AS employee_id, e.first_name, e.last_name, d.name AS department_name, r.title AS job_title, r.salary, CONCAT(x.first_name, " ", x.last_name) AS manager_name 
+    FROM employee e
+    LEFT JOIN role r
+    ON e.role_id = r.id
+    LEFT JOIN department d
+    ON d.id = r.department_id
+    LEFT JOIN employee x
+    ON e.manager_id = x.id`;
+
+	connection.query(query, function (err, res) {
+		if (err) throw err;
+		
+		console.table(res);
+
+		start();
+	});
+  }
   
