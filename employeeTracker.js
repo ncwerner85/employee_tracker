@@ -2,6 +2,10 @@ const mysql = require("mysql");
 const inquirer = require("inquirer");
 const cTable = require('console.table');
 
+// constructor Classes
+const employee = require("./constructors/employee")
+const department = require("./constructors/department")
+const role = require("./constructors/role")
 
 // create the connection information for the sql database
 var connection = mysql.createConnection({
@@ -46,25 +50,38 @@ connection.connect(function(err) {
             viewEE();
         }
         else if (answer.start === "Add Employee") {
-            addEE();
+            //addEE();
         }
         else if (answer.start === "View Department") {
-            viewDepartment();
+            //viewDepartment();
         }
         else if (answer.start === "Add Department") {
-            addDepartment();
+            //addDepartment();
         }
         else if (answer.start === "View Role") {
-            viewRole();
+            //viewRole();
         }
         else if (answer.start === "Add Role") {
-            addRole();
+            //addRole();
         }
         else if (answer.start === "Update Employee Role") {
-            updateEErole();
+            //updateEErole();
         }
         else{
             connection.end();
         }
     });
   }
+  // function to handle viewing employees
+/*  function viewEE() {
+    console.log("Viewing employees\n");
+      connection.query(
+          "SELECT * FROM employee",
+        function(err) {
+              if (err) throw err;
+              console.table(res);
+             // start()
+            }
+      )
+  };*/
+  
