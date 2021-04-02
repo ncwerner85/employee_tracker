@@ -7,6 +7,11 @@ const employee = require("./constructors/employee")
 const department = require("./constructors/department")
 const role = require("./constructors/role")
 
+const roleArray = [];
+const managerArray = [];
+const roleAndIDArray = [];
+const managerAndIDArray = [];
+
 // create the connection information for the sql database
 var connection = mysql.createConnection({
   host: "localhost",
@@ -50,7 +55,7 @@ connection.connect(function(err) {
             viewEE();
         }
         else if (answer.start === "Add Employee") {
-            //addEE();
+            addEE();
         }
         else if (answer.start === "View Department") {
             //viewDepartment();
@@ -75,7 +80,7 @@ connection.connect(function(err) {
   // function to handle viewing employees
 function viewEE() {
     console.log("Viewing employees\n");
-    
+
 	const query = `
     SELECT e.id AS employee_id, e.first_name, e.last_name, d.name AS department_name, r.title AS job_title, r.salary, CONCAT(x.first_name, " ", x.last_name) AS manager_name 
     FROM employee e
@@ -94,4 +99,92 @@ function viewEE() {
 		start();
 	});
   }
-  
+// function to handle Add Employee
+function addEE() {
+    inquirer
+    .prompt([
+        {
+            name: "first_name",
+            type: "input",
+            message: "What is the first name of the new employee?",
+            
+        },
+        {
+            name: "last_name",
+            type: "input",
+            message: "What is the last name of the new employee?",
+        },
+        {
+            name: "department",
+            type: "list",
+            message: "Please selecte select the department the new employee",
+            choices: [
+                "Sales",
+                "Web Development",
+                "Recruiting",
+                "Legal"
+            ]
+        },
+        {
+            name: 'role',
+            type: 'list',
+            message: 'What Is The Job Title Of This New Employee?',
+            choices: [
+                "Sales Associate",
+                "Sales Manager",
+                "Sales Director",
+                "Junior FrontEnd Developer",
+                "Senior FrontEnd Developer",
+                "Junior FullStack Developer",
+                "Senior FullStack Developer",
+                "Developer Manager",
+                "Recruiter",
+                "Senior Recruiter",
+                "Operations Manager",
+                "ParaLegal",
+                "Legal Team Manager",
+                "Lawyer",
+            ]
+        },
+        {
+            name: 'manager',
+            type: "input",
+            message: "Who is the Manager of the new employee?",
+        },
+    ])
+    .then(function (answer) {
+        console.log("Adding new employee")
+        let employeeFirstName = answer.first_name
+        let employeeLastName = answer.last_name
+        // let employeeDepartment = answer.department
+        function FindRoleID() {
+            for (let i = 0; i < roleAndIDArray.length; i++) {
+                if (roleAndIDArray[i].title === answer.role) {
+                    return roleAndIDArray[i].id;
+                }
+            }
+        }
+        function FindManagerID() {
+            for (let j = 0; j < managerAndIDArray.length; j++) {
+                if (managerAndIDArray[j].manager_name === answer.manager) {
+                    return managerAndIDArray[j].manager_id;
+                }
+            }
+        }
+        let employeeRole = FindRoleID();
+        let employeeManager = FindManagerID();
+        let addNewEmployee = new employee(employeeFirstName, employeeLastName, employeeDepartment, employeeRole, employeeManager);
+        connection.query("INSERT INTO employee SET ?", addNewEmployee, function(err, res) {
+            if (err) throw err;
+        });
+        start()
+    });
+}
+
+// function to handle View Department
+
+// function to handle Add Department
+
+// function to handle View Role
+
+// function to handle Add Role  
